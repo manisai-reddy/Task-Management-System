@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow - Task Management System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!-- ================= LOGIN PAGE ================= -->
+    <div id="authPage" class="auth-page">
+
+        <div class="auth-card">
+
+            <div class="logo">
+                <div class="logo-icon">✓</div>
+                <h1>TaskFlow</h1>
+            </div>
+
+            <p class="auth-subtitle">Manage your work. Achieve your goals.</p>
+
+            <!-- LOGIN -->
+            <div id="loginBox">
+
+                <h2>Welcome Back</h2>
+                <p class="form-description">Login to your account</p>
+
+                <form id="loginForm">
+
+                    <div class="input-group">
+                        <label>Email</label>
+                        <input type="email" id="loginEmail" placeholder="Enter your email" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                    </div>
+
+                    <button type="submit" class="primary-btn">Login</button>
+
+                </form>
+
+                <p class="switch-text">
+                    Don't have an account?
+                    <button onclick="showRegister()">Create Account</button>
+                </p>
+
+            </div>
+
+            <!-- REGISTER -->
+            <div id="registerBox" class="hidden">
+
+                <h2>Create Account</h2>
+                <p class="form-description">Register as a new user</p>
+
+                <form id="registerForm">
+
+                    <div class="input-group">
+                        <label>Full Name</label>
+                        <input type="text" id="registerName" placeholder="Enter your name" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Email</label>
+                        <input type="email" id="registerEmail" placeholder="Enter your email" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" id="registerPassword" placeholder="Create a password" required>
+                    </div>
+
+                    <button type="submit" class="primary-btn">Create Account</button>
+
+                </form>
+
+                <p class="switch-text">
+                    Already have an account?
+                    <button onclick="showLogin()">Login</button>
+                </p>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- ================= APP ================= -->
+    <div id="app" class="app hidden">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+
+            <div class="sidebar-logo">
+                <div class="logo-icon">✓</div>
+                <span>TaskFlow</span>
+            </div>
+
+            <nav>
+
+                <button class="nav-item active" onclick="showSection('dashboard')" id="dashboardNav">
+                    <span>📊</span>
+                    Dashboard
+                </button>
+
+                <button class="nav-item" onclick="showSection('tasks')">
+                    <span>✓</span>
+                    My Tasks
+                </button>
+
+                <button class="nav-item" onclick="showSection('projects')">
+                    <span>📁</span>
+                    Projects
+                </button>
+
+                <button class="nav-item admin-only" onclick="showSection('users')">
+                    <span>👥</span>
+                    Users
+                </button>
+
+                <button class="nav-item admin-only" onclick="showSection('allTasks')">
+                    <span>📋</span>
+                    All Tasks
+                </button>
+
+            </nav>
+
+            <div class="sidebar-bottom">
+
+                <div class="sidebar-user">
+                    <div class="avatar" id="sidebarAvatar">M</div>
+
+                    <div>
+                        <strong id="sidebarName">Admin</strong>
+                        <small id="sidebarRole">Administrator</small>
+                    </div>
+                </div>
+
+                <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+
+            </div>
+
+        </aside>
+
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+
+            <!-- TOPBAR -->
+            <header class="topbar">
+
+                <div>
+                    <h2 id="pageTitle">Dashboard</h2>
+                    <p id="welcomeText">Welcome back!</p>
+                </div>
+
+                <div class="topbar-right">
+
+                    <button class="notification-btn" onclick="showNotifications()">
+                        🔔
+                        <span id="notificationCount">0</span>
+                    </button>
+
+                    <div class="top-avatar" id="topAvatar">M</div>
+
+                </div>
+
+            </header>
+
+
+            <!-- ================= DASHBOARD ================= -->
+            <section id="dashboardSection" class="section">
+
+                <div class="stats-grid">
+
+                    <div class="stat-card">
+                        <div class="stat-icon blue">📋</div>
+                        <div>
+                            <span>Total Tasks</span>
+                            <h3 id="totalTasks">0</h3>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon orange">⏳</div>
+                        <div>
+                            <span>Pending</span>
+                            <h3 id="pendingTasks">0</h3>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon green">✓</div>
+                        <div>
+                            <span>Completed</span>
+                            <h3 id="completedTasks">0</h3>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon red">⚠</div>
+                        <div>
+                            <span>Overdue</span>
+                            <h3 id="overdueTasks">0</h3>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="dashboard-grid">
+
+                    <div class="panel">
+
+                        <div class="panel-header">
+                            <div>
+                                <h3>Recent Tasks</h3>
+                                <p>Your latest assigned tasks</p>
+                            </div>
+
+                            <button onclick="showSection('tasks')" class="small-btn">
+                                View All
+                            </button>
+                        </div>
+
+                        <div id="recentTasks" class="task-list"></div>
+
+                    </div>
+
+
+                    <div class="panel">
+
+                        <div class="panel-header">
+                            <div>
+                                <h3>Task Progress</h3>
+                                <p>Overall completion</p>
+                            </div>
+                        </div>
+
+                        <div class="progress-container">
+
+                            <div class="progress-circle">
+                                <div>
+                                    <strong id="progressPercentage">0%</strong>
+                                    <span>Complete</span>
+                                </div>
+                            </div>
+
+                            <div class="progress-info">
+
+                                <div>
+                                    <span class="dot blue-dot"></span>
+                                    Completed
+                                    <strong id="progressCompleted">0</strong>
+                                </div>
+
+                                <div>
+                                    <span class="dot orange-dot"></span>
+                                    Pending
+                                    <strong id="progressPending">0</strong>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- ================= TASKS ================= -->
+            <section id="tasksSection" class="section hidden">
+
+                <div class="section-actions">
+
+                    <div class="search-box">
+                        🔍
+                        <input type="text" id="taskSearch" placeholder="Search tasks..." oninput="renderTasks()">
+                    </div>
+
+                    <select id="statusFilter" onchange="renderTasks()">
+                        <option value="all">All Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="in-progress">In Progress</option>
+                        <option value="completed">Completed</option>
+                    </select>
+
+                    <button class="primary-btn add-btn admin-only" onclick="openTaskModal()">
+                        + Add Task
+                    </button>
+
+                </div>
+
+                <div id="tasksContainer" class="tasks-grid"></div>
+
+            </section>
+
+
+            <!-- ================= PROJECTS ================= -->
+            <section id="projectsSection" class="section hidden">
+
+                <div class="section-actions">
+
+                    <div>
+                        <h2>Projects</h2>
+                        <p>Organize tasks by project</p>
+                    </div>
+
+                    <button class="primary-btn admin-only" onclick="openProjectModal()">
+                        + Add Project
+                    </button>
+
+                </div>
+
+                <div id="projectsContainer" class="projects-grid"></div>
+
+            </section>
+
+
+            <!-- ================= USERS ================= -->
+            <section id="usersSection" class="section hidden">
+
+                <div class="section-actions">
+
+                    <div>
+                        <h2>Users</h2>
+                        <p>Manage registered accounts</p>
+                    </div>
+
+                    <div class="user-count">
+                        <strong id="userCount">0</strong> Users
+                    </div>
+
+                </div>
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Joined</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="usersTable"></tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+
+            <!-- ================= ALL TASKS ================= -->
+            <section id="allTasksSection" class="section hidden">
+
+                <div class="section-actions">
+
+                    <div>
+                        <h2>All Tasks</h2>
+                        <p>Manage tasks assigned to all users</p>
+                    </div>
+
+                    <button class="primary-btn" onclick="openTaskModal()">
+                        + Assign Task
+                    </button>
+
+                </div>
+
+                <div id="allTasksContainer" class="tasks-grid"></div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- ================= TASK MODAL ================= -->
+    <div id="taskModal" class="modal hidden">
+
+        <div class="modal-card">
+
+            <div class="modal-header">
+                <div>
+                    <h2 id="taskModalTitle">Create Task</h2>
+                    <p>Assign and manage work</p>
+                </div>
+
+                <button onclick="closeTaskModal()" class="close-btn">×</button>
+            </div>
+
+            <form id="taskForm">
+
+                <input type="hidden" id="editTaskId">
+
+                <div class="form-row">
+
+                    <div class="input-group">
+                        <label>Task Title</label>
+                        <input type="text" id="taskTitle" placeholder="Enter task title" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Project</label>
+                        <select id="taskProject"></select>
+                    </div>
+
+                </div>
+
+                <div class="input-group">
+                    <label>Description</label>
+                    <textarea id="taskDescription" placeholder="Describe the task..." rows="4"></textarea>
+                </div>
+
+                <div class="form-row">
+
+                    <div class="input-group">
+                        <label>Assign To</label>
+                        <select id="taskAssignee" required></select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Deadline</label>
+                        <input type="date" id="taskDeadline" required>
+                    </div>
+
+                </div>
+
+                <div class="form-row">
+
+                    <div class="input-group">
+                        <label>Priority</label>
+
+                        <select id="taskPriority">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                        </select>
+
+                    </div>
+
+                    <div class="input-group">
+                        <label>Status</label>
+
+                        <select id="taskStatus">
+                            <option value="pending">Pending</option>
+                            <option value="in-progress">In Progress</option>
+                            <option value="completed">Completed</option>
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-actions">
+
+                    <button type="button" class="secondary-btn" onclick="closeTaskModal()">
+                        Cancel
+                    </button>
+
+                    <button type="submit" class="primary-btn">
+                        Save Task
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= PROJECT MODAL ================= -->
+    <div id="projectModal" class="modal hidden">
+
+        <div class="modal-card small-modal">
+
+            <div class="modal-header">
+
+                <div>
+                    <h2>Create Project</h2>
+                </div>
+
+                <button onclick="closeProjectModal()" class="close-btn">×</button>
+
+            </div>
+
+            <form id="projectForm">
+
+                <div class="input-group">
+                    <label>Project Name</label>
+
+                    <input type="text" id="projectName" placeholder="Enter project name" required>
+
+                </div>
+
+                <div class="input-group">
+
+                    <label>Description</label>
+
+                    <textarea id="projectDescription" placeholder="Project description" rows="4"></textarea>
+
+                </div>
+
+                <div class="modal-actions">
+
+                    <button type="button" class="secondary-btn" onclick="closeProjectModal()">
+                        Cancel
+                    </button>
+
+                    <button type="submit" class="primary-btn">
+                        Create Project
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= USER MODAL ================= -->
+    <div id="userModal" class="modal hidden">
+
+        <div class="modal-card small-modal">
+
+            <div class="modal-header">
+
+                <div>
+                    <h2>User Details</h2>
+                </div>
+
+                <button onclick="closeUserModal()" class="close-btn">×</button>
+
+            </div>
+
+            <div id="userDetails"></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= NOTIFICATION MODAL ================= -->
+    <div id="notificationModal" class="modal hidden">
+
+        <div class="modal-card small-modal">
+
+            <div class="modal-header">
+
+                <div>
+                    <h2>Notifications</h2>
+                </div>
+
+                <button onclick="closeNotificationModal()" class="close-btn">×</button>
+
+            </div>
+
+            <div id="notifications"></div>
+
+        </div>
+
+    </div>
+
+
+    <script src="app.js"></script>
+
+</body>
+</html>
